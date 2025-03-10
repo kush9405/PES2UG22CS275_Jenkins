@@ -4,38 +4,40 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                script {
-                    echo "Building the application..."
-                    sh "make -C main clean && make -C main hello_exec"
-                }
+                echo 'Starting Build Stage'
+                sh 'g++ main/hello.cpp -o hello'  // Updated path to hello.cpp
+                echo 'Build Stage Successful'
             }
         }
 
         stage('Test') {
             steps {
-                script {
-                    echo "Running tests..."
-                    sh "./main/hello_exec"
+                echo 'Running Tests'
+                sh './hello'
+                echo 'Test Stage Successful'
+            }
+            post {
+                always {
+                    echo 'Test execution completed'
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                script {
-                    echo "Deploying application..."
-                    sh 'echo "Deployment successful!"'
-                }
+                echo 'Deploying Application'
+                sh 'echo Deploying hello.cpp output'
+                echo 'Deployment Successful'
             }
         }
     }
 
     post {
-        failure {
-            echo "Pipeline failed"
-        }
         success {
-            echo "Pipeline completed successfully!"
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed! Check logs for errors.'
         }
     }
 }

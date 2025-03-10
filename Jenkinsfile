@@ -4,40 +4,38 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Starting Build Stage'
-                sh 'echo Build simulation'
-                echo 'Build Stage Successful'
+                script {
+                    echo "Building the application..."
+                    sh "make -C main clean && make -C main hello_exec"
+                }
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running Tests'
-                sh 'echo Test simulation - No mvn required'
-                echo 'Test Stage Successful'
-            }
-            post {
-                always {
-                    echo 'Simulated test reports generated'
+                script {
+                    echo "Running tests..."
+                    sh "./main/hello_exec"
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying Application'
-                sh 'echo Deploy simulation'
-                echo 'Deployment Successful'
+                script {
+                    echo "Deploying application..."
+                    sh 'echo "Deployment successful!"'
+                }
             }
         }
     }
 
     post {
-        success {
-            echo 'Pipeline completed successfully!'
-        }
         failure {
-            echo 'Pipeline failed! Check logs for errors.'
+            echo "Pipeline failed"
+        }
+        success {
+            echo "Pipeline completed successfully!"
         }
     }
 }
